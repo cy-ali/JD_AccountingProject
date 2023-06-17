@@ -1,50 +1,32 @@
 package com.cydeo.entity;
 
 import lombok.Getter;
+import lombok.Setter;
 
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-import javax.persistence.MappedSuperclass;
-import javax.validation.constraints.NotNull;
+import javax.persistence.*;
 import java.time.LocalDateTime;
 
 @MappedSuperclass
 @Getter
+@Setter
+@EntityListeners(BaseEntityListener.class)
 public abstract class BaseEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     Long id;
 
-    @NotNull
+    @Column(nullable = false,updatable = false)
     private LocalDateTime insertDateTime;
 
-    @NotNull
+    @Column(nullable = false,updatable = false)
     private Long insertUserId;
 
-    @NotNull
+    @Column(nullable = false)
     LocalDateTime lastUpdateDateTime;
 
-    @NotNull
+    @Column(nullable = false)
     Long lastUpdateUserId;
 
-    boolean isDeleted;
-
-
-    public void setId(Long id) {
-        this.id = id;
-    }
-
-    public void setLastUpdateDateTime(LocalDateTime lastUpdateDateTime) {
-        this.lastUpdateDateTime = lastUpdateDateTime;
-    }
-
-    public void setLastUpdateUserId(Long lastUpdateUserId) {
-        this.lastUpdateUserId = lastUpdateUserId;
-    }
-
-    public void setDeleted(boolean deleted) {
-        isDeleted = deleted;
-    }
+    boolean isDeleted = false;
 }
