@@ -1,9 +1,12 @@
 package com.cydeo.service.impl;
 
+import com.cydeo.dto.UserDTO;
 import com.cydeo.entity.User;
 import com.cydeo.entity.common.UserPrincipal;
 import com.cydeo.repository.UserRepository;
 import com.cydeo.service.SecurityService;
+import com.cydeo.service.UserService;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
@@ -12,9 +15,11 @@ import org.springframework.stereotype.Service;
 public class SecurityServiceImpl implements SecurityService {
 
     private final UserRepository userRepository;
+    private final UserService userService;
 
-    public SecurityServiceImpl(UserRepository userRepository) {
+    public SecurityServiceImpl(UserRepository userRepository, UserService userService) {
         this.userRepository = userRepository;
+        this.userService = userService;
     }
 
     @Override
@@ -24,5 +29,11 @@ public class SecurityServiceImpl implements SecurityService {
             throw new UsernameNotFoundException("There is no user with this username");
         }
         return new UserPrincipal(user);
+    }
+
+    @Override
+    public UserDTO getLoggedInUser() {
+        var username = SecurityContextHolder.getContext().getAuthentication().getName();
+        return userService.findByUsername(username);
     }
 }
